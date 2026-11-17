@@ -1,12 +1,12 @@
 export const CSS = `
 :root{
-  /* Theme: indigo & navy with a warm amber accent. Change colours here. */
-  --bg:#f5f6fa;--panel:#fff;--ink:#1c1d2b;--muted:#5f6275;--line:#e3e5ee;--soft:#eef0f6;
-  --brand:#4338ca;--brand-hover:#3730a3;--brand-ink:#fff;--brand-soft:#e9e8fc;--focus:#a5a1f0;--accent:#d97706;
-  --side-bg:#161936;--side-ink:#dcdef2;--side-link:#b9bce0;--side-muted:#8d90b8;--side-hover:rgba(255,255,255,.07);--side-on:rgba(129,140,248,.22);
-  --logo-bg:#fbbf24;--logo-ink:#161936;--row-hover:#f8f8fd;--th-bg:#f9f9fc;
+  /* Theme: slate & sky blue. Change colours here. */
+  --bg:#f4f7fa;--panel:#fff;--ink:#17202b;--muted:#5b6778;--line:#e1e7ee;--soft:#eef3f8;
+  --brand:#1d6fb8;--brand-hover:#175a96;--brand-ink:#fff;--brand-soft:#e3effa;--focus:#93c5fd;--accent:#38bdf8;
+  --side-bg:#0f2742;--side-ink:#dbe6f2;--side-link:#bfd0e4;--side-muted:#8ba3bf;--side-hover:rgba(255,255,255,.07);--side-on:rgba(56,189,248,.18);
+  --logo-bg:#38bdf8;--logo-ink:#0f2742;--row-hover:#f7fafd;--th-bg:#f8fafc;
   --ok:#15803d;--ok-bg:#e3f5e9;--warn:#92400e;--warn-bg:#fef3c7;--bad:#b42318;--bad-bg:#fde8e6;--info:#1d4ed8;--info-bg:#e5edfd;
-  --radius:10px;--shadow:0 1px 2px rgba(22,25,54,.06),0 2px 8px rgba(22,25,54,.04);
+  --radius:10px;--shadow:0 1px 2px rgba(15,39,66,.06),0 2px 8px rgba(15,39,66,.04);
   font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:15px;color:var(--ink);
 }
 *{box-sizing:border-box}
@@ -42,7 +42,7 @@ tr:last-child td{border-bottom:0}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 tbody tr:hover{background:var(--row-hover)}
 .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 14px;border-radius:8px;font:inherit;font-weight:600;font-size:.9rem;cursor:pointer;text-decoration:none;white-space:nowrap}
-.btn:hover{border-color:#c5c8d8}
+.btn:hover{border-color:#c3ccd8}
 .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.primary:hover{background:var(--brand-hover);border-color:var(--brand-hover)}
 .btn.danger{color:var(--bad)}.btn.sm{padding:4px 10px;font-size:.82rem}.btn.link{border:0;background:none;padding:0;color:var(--brand);font-weight:500}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.spread{justify-content:space-between}
@@ -51,7 +51,7 @@ tbody tr:hover{background:var(--row-hover)}
 form.stack > *{margin-bottom:12px}
 label{display:block;font-weight:600;font-size:.85rem;margin-bottom:4px}
 label .hint{font-weight:400;color:var(--muted)}
-input,select,textarea{width:100%;font:inherit;padding:8px 10px;border:1px solid #d0d3e0;border-radius:8px;background:#fff;color:var(--ink)}
+input,select,textarea{width:100%;font:inherit;padding:8px 10px;border:1px solid #cfd8e3;border-radius:8px;background:#fff;color:var(--ink)}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--focus);border-color:var(--brand)}
 input[type=checkbox],input[type=radio]{width:auto}
 textarea{min-height:90px}
@@ -76,7 +76,7 @@ details.inline[open] summary{margin-bottom:10px}
 .steps button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:6px 14px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--muted)}
 .steps button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
 .step{display:none}.step.on{display:block}
-.rows .rowitem{border:1px dashed #d0d3e0;border-radius:8px;padding:12px;margin-bottom:10px;position:relative}
+.rows .rowitem{border:1px dashed #cfd8e3;border-radius:8px;padding:12px;margin-bottom:10px;position:relative}
 .rows .rowitem .rm{position:absolute;top:6px;right:8px}
 .preview-name{font-size:1.25rem;font-weight:700;padding:12px 14px;background:var(--brand-soft);border-radius:8px;color:var(--brand)}
 .namecheck ul{margin:6px 0;padding-left:18px}
@@ -87,7 +87,7 @@ details.inline[open] summary{margin-bottom:10px}
 @media (max-width:900px){.app{grid-template-columns:1fr;background:none}.side{position:static;height:auto}.g2,.g3{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}.stat .n{font-size:1.4rem}main{padding:18px 16px}.kv{grid-template-columns:1fr}}
 
 /* Printable documents */
-.doc-wrap{background:#e8e9f0;min-height:100vh;padding:24px}
+.doc-wrap{background:#e6ebf1;min-height:100vh;padding:24px}
 .doc-tools{max-width:820px;margin:0 auto 12px;display:flex;gap:8px}
 .doc{background:#fff;max-width:820px;margin:0 auto;padding:64px 72px;box-shadow:var(--shadow);font-family:Georgia,"Times New Roman",serif;font-size:12pt;line-height:1.55}
 .doc h1{font-size:16pt;text-align:center;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}

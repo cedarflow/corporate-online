@@ -15,4 +15,5 @@
   ]
   // Secrets (set with `npx wrangler secret put SESSION_SECRET`):
   //   SESSION_SECRET  - long random string used to sign login cookies
+  //   SETUP_TOKEN     - optional; if set, first-run /setup requires ?token=<value>
 }

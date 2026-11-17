@@ -57,13 +57,26 @@ const AuthPage = (props: { title: string; children: any; error?: string }) => (
 );
 
 // ---- First-run setup: create the first admin account ----
+// If SETUP_TOKEN is configured, setup only works via /setup?token=<SETUP_TOKEN>.
+function setupAllowed(c: Ctx, token: string | undefined): boolean {
+  const expected = c.env.SETUP_TOKEN;
+  if (!expected) return true;
+  if (!token || token.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < token.length; i++) diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
+  return diff === 0;
+}
+const SetupLocked = () => <AuthPage title="Setup link required"><p class="muted">This workspace hasn't been set up yet. Open the setup link you were given (it includes a token).</p></AuthPage>;
+
 app.get('/setup', async (c) => {
   const n = await first<{ n: number }>(c.env.DB, 'SELECT COUNT(*) AS n FROM users');
   if (n && n.n > 0) return c.redirect('/login');
+  if (!setupAllowed(c, c.req.query('token'))) return c.html(<SetupLocked />, 403);
   return c.html(
     <AuthPage title="Set up Corporate Online">
       <p class="muted">Create the first administrator account. You can invite the rest of the team afterwards.</p>
       <form method="post" class="stack">
+        <input type="hidden" name="token" value={c.req.query('token') ?? ''} />
         <Field label="Your name" name="name" required />
         <Field label="Work email" name="email" type="email" required />
         <Field label="Password" name="password" type="password" required hint="10+ characters" />
@@ -76,8 +89,9 @@ app.post('/setup', async (c) => {
   const n = await first<{ n: number }>(c.env.DB, 'SELECT COUNT(*) AS n FROM users');
   if (n && n.n > 0) return c.redirect('/login');
   const f = await readForm(c);
+  if (!setupAllowed(c, s(f.token))) return c.html(<SetupLocked />, 403);
   const problem = passwordProblem(s(f.password)) ?? (!s(f.name) || !s(f.email) ? 'Name and email are required.' : null);
-  if (problem) return c.html(<AuthPage title="Set up Corporate Online" error={problem}><p><a href="/setup">Try again</a></p></AuthPage>, 400);
+  if (problem) return c.html(<AuthPage title="Set up Corporate Online" error={problem}><p><a href={`/setup?token=${encodeURIComponent(s(f.token))}`}>Try again</a></p></AuthPage>, 400);
   const id = newId();
   await run(c.env.DB, "INSERT INTO users (id, email, name, password_hash, role) VALUES (?,?,?,?, 'admin')", id, s(f.email).toLowerCase(), s(f.name), await hashPassword(s(f.password)));
   await startSession(c, id);
@@ -97,7 +111,7 @@ const LoginForm = ({ error, next, email }: { error?: string; next?: string; emai
 );
 app.get('/login', async (c) => {
   const n = await first<{ n: number }>(c.env.DB, 'SELECT COUNT(*) AS n FROM users');
-  if (!n || n.n === 0) return c.redirect('/setup');
+  if (!n || n.n === 0) return c.env.SETUP_TOKEN ? c.html(<SetupLocked />, 403) : c.redirect('/setup');
   return c.html(<LoginForm next={c.req.query('next')} />);
 });
 app.post('/login', async (c) => {
