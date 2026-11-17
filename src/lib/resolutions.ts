@@ -3,6 +3,7 @@
 import { human, fyeLabel } from './dates.ts';
 import type { Jurisdiction } from './jurisdictions.ts';
 import type { Company, Director, Officer, ShareClass, Shareholder, ShareTx } from './types.ts';
+import { capTable } from './captable.ts';
 
 export interface ResolutionContext {
   company: Company;
@@ -182,6 +183,32 @@ export const TEMPLATES: TemplateDef[] = [
       if (c.params.new_director) items.push(`${c.params.new_director} is elected a director of the Corporation effective ${eff}, to hold office until the next annual meeting or until a successor is elected or appointed.`);
       items.push(`Any director or officer is authorized to file a notice of change of directors with ${c.j.registry} within the time required.`);
       return { title: 'Change of directors', body: `${unanimousIntro(c, 'shareholders')}\n\n${list(items)}${counterparts}` };
+    },
+  },
+  {
+    kind: 'dividend',
+    label: 'Dividend resolution',
+    body_type: 'directors',
+    description: 'Declare a dividend on a class of shares, split pro rata between the holders.',
+    params: [
+      { name: 'class', label: 'Share class (exact name)' },
+      { name: 'amount', label: 'Total dividend ($)', type: 'number' },
+      { name: 'record_date', label: 'Record date', type: 'date' },
+      { name: 'payment_date', label: 'Payment date', type: 'date' },
+    ],
+    build: (c) => {
+      const cls = c.classes.find((x) => x.name === c.params.class) ?? c.classes[0];
+      const total = Number(c.params.amount || 0);
+      const rows = cls ? capTable(c.shareholders, c.classes, c.txs).rows.filter((r) => (r.byClass[cls.id] ?? 0) > 0) : [];
+      const outstanding = rows.reduce((n, r) => n + r.byClass[cls!.id], 0);
+      const perShare = outstanding ? total / outstanding : 0;
+      const split = rows.map((r) => `   - ${r.shareholder.name}: ${r.byClass[cls!.id].toLocaleString()} shares, $${(r.byClass[cls!.id] * perShare).toFixed(2)}`).join('\n');
+      const items = [
+        `A dividend in the aggregate amount of $${total.toFixed(2)} (approximately $${perShare.toFixed(6)} per share) is declared on the ${cls?.name ?? '[class]'} shares of the Corporation, payable on ${c.params.payment_date ? human(c.params.payment_date) : '[payment date]'} to holders of record at the close of business on ${c.params.record_date ? human(c.params.record_date) : '[record date]'}, as follows:\n${split || '   - [holders]'}`,
+        'The directors have determined that there are no reasonable grounds for believing that the Corporation is insolvent or that payment of the dividend would render it insolvent.',
+        'Any director or officer is authorized to pay the dividend and to prepare and file any required information returns (including T5 slips).',
+      ];
+      return { title: `Dividend on ${cls?.name ?? ''} shares: $${total.toFixed(2)}`, body: `${unanimousIntro(c, 'directors')}\n\n${list(items)}${counterparts}` };
     },
   },
   {

@@ -11,6 +11,7 @@ import { STANDARD_TASKS, complianceStatements, computeLegalName, displayName, lo
 import type { Client, Company, User } from '../lib/types.ts';
 import { arr, int, readForm, redirect, s } from '../http.ts';
 import { Area, D, DueBadge, Empty, Field, Page, Post, Select, StatusBadge } from '../views/layout.tsx';
+import { ActivityTab, FilesTab, FinancingTab, IscSection, TeamTab } from './extras.tsx';
 
 const app = new Hono<AppEnv>();
 
@@ -231,6 +232,7 @@ app.get('/new', async (c) => {
             <Field label="Maximum directors" name="max_directors" type="number" value="10" />
           </div>
           <div style="margin-top:12px"><Area label="Restrictions on business / share transfers" name="restrictions" value="None on business. Share transfers require approval of the directors (private issuer restrictions)." /></div>
+          <label class="check" style="margin-top:8px"><input type="checkbox" name="uncertificated" value="1" /> Shares will be uncertificated (holders get a written notice instead of a certificate; common for BC companies)</label>
           <div class="row" style="margin-top:16px"><button class="btn" data-prev>Back</button><button class="btn primary" data-next>Next</button></div>
         </section>
 
@@ -310,6 +312,7 @@ app.post('/', async (c) => {
     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     co.id, clientId, co.name_type, co.distinctive, co.descriptive, co.legal_ending, legalName, j.code, co.corp_number, s(f.import_bn), status, incDate, fye,
     s(f.registered_office), s(f.mailing_address), s(f.nuans_number), s(f.business_activity), s(f.restrictions), int(f.min_directors) ?? 1, int(f.max_directors) ?? 10, s(f.notes), user.id));
+  if (s(f.uncertificated) === '1') stmts.push(stmt(db, 'UPDATE companies SET uncertificated = 1 WHERE id = ?', co.id));
 
   // Directors
   const dn = arr(f.dir_name), de = arr(f.dir_email), da = arr(f.dir_address), dr = arr(f.dir_resident);
@@ -353,7 +356,10 @@ app.post('/', async (c) => {
 });
 
 // ---------------------------------------------------------------- show
-const TABS: [string, string][] = [['overview', 'Overview'], ['people', 'Directors & officers'], ['shares', 'Shares'], ['resolutions', 'Resolutions'], ['compliance', 'Compliance'], ['tasks', 'Tasks'], ['documents', 'Minute book']];
+const TABS: [string, string][] = [
+  ['overview', 'Overview'], ['people', 'Directors & officers'], ['shares', 'Shares'], ['financing', 'Financing'], ['resolutions', 'Resolutions'],
+  ['files', 'Documents'], ['documents', 'Minute book'], ['team', 'Employees'], ['compliance', 'Compliance'], ['tasks', 'Tasks'], ['activity', 'Activity'],
+];
 
 app.get('/:id', async (c) => {
   const b = await loadCompany(c.env.DB, c.req.param('id'));
@@ -395,6 +401,10 @@ app.get('/:id', async (c) => {
         {tab === 'compliance' ? <Compliance b={b} today={t} /> : null}
         {tab === 'tasks' ? <Tasks b={b} users={users} /> : null}
         {tab === 'documents' ? <Documents b={b} /> : null}
+        {tab === 'files' ? <FilesTab b={b} q={c.req.query('q') ?? ''} cat={c.req.query('cat') ?? ''} /> : null}
+        {tab === 'team' ? <TeamTab b={b} /> : null}
+        {tab === 'financing' ? <FinancingTab b={b} /> : null}
+        {tab === 'activity' ? <ActivityTab b={b} /> : null}
       </>
     ),
   });
@@ -430,14 +440,22 @@ const Overview = ({ b }: { b: CompanyBundle }) => {
             <dt>Governing statute</dt><dd>{b.j.statute}</dd>
             <dt>Corporation #</dt><dd>{co.corp_number || '—'}</dd>
             <dt>Business # (BN)</dt><dd>{co.business_number || '—'}</dd>
+            <dt>GST/HST #</dt><dd>{co.gst_number || '—'}</dd>
+            <dt>Payroll program #</dt><dd>{co.payroll_number || <a href={`/companies/${co.id}/edit`}>Add payroll account</a>}</dd>
+            <dt>Import-export #</dt><dd>{co.import_export_number || <a href={`/companies/${co.id}/edit`}>Add import-export number</a>}</dd>
             <dt>Incorporated</dt><dd><D d={co.incorporation_date} /></dd>
+            <dt>Annual return due</dt><dd>{b.compliance.find((x) => x.kind === 'annual_return' && !x.completed_on) ? <D d={b.compliance.find((x) => x.kind === 'annual_return' && !x.completed_on)!.due_date} /> : '—'}</dd>
             <dt>Fiscal year end</dt><dd>{fyeLabel(co.fiscal_year_end) || '—'}</dd>
             <dt>Registered office</dt><dd>{co.registered_office || '—'}</dd>
+            {co.records_office ? <><dt>Records office</dt><dd>{co.records_office}</dd></> : null}
             {co.mailing_address ? <><dt>Mailing address</dt><dd>{co.mailing_address}</dd></> : null}
             <dt>Business activity</dt><dd>{co.business_activity || '—'}</dd>
             <dt>Directors (min–max)</dt><dd>{co.min_directors}–{co.max_directors}</dd>
-            {co.nuans_number ? <><dt>NUANS / NR #</dt><dd>{co.nuans_number}{co.nuans_date ? <> (<D d={co.nuans_date} />)</> : null}</dd></> : null}
+            <dt>Share evidence</dt><dd>{co.uncertificated ? 'Uncertificated (notices issued)' : 'Share certificates'}</dd>
+            {co.nuans_number ? <><dt>Name search / NR #</dt><dd>{co.nuans_number}{co.nuans_date ? <> (<D d={co.nuans_date} />)</> : null}{co.name_request_expires ? <div class="small muted">Reservation expires <D d={co.name_request_expires} /></div> : null}</dd></> : null}
+            {co.registry_password ? <><dt>Registry password</dt><dd><details class="inline"><summary class="small">Show</summary><span class="mono">{co.registry_password}</span></details></dd></> : null}
             {co.restrictions ? <><dt>Restrictions</dt><dd>{co.restrictions}</dd></> : null}
+            {co.extra_info ? <><dt>Extra information</dt><dd>{co.extra_info}</dd></> : null}
             {co.notes ? <><dt>Notes</dt><dd>{co.notes}</dd></> : null}
           </dl>
         </div>
@@ -490,6 +508,7 @@ const StatusForm = ({ b }: { b: CompanyBundle }) => {
 const People = ({ b }: { b: CompanyBundle }) => {
   const id = b.company.id;
   return (
+    <>
     <div class="grid g2">
       <div class="card flush">
         <h2>Directors register</h2>
@@ -559,6 +578,8 @@ const People = ({ b }: { b: CompanyBundle }) => {
         </div>
       </div>
     </div>
+    <IscSection b={b} />
+    </>
   );
 };
 
@@ -571,7 +592,7 @@ const Shares = ({ b }: { b: CompanyBundle }) => {
   return (
     <>
       <div class="card flush">
-        <div class="row spread" style="padding:16px 20px 0"><h2>Capitalization table</h2><a class="btn sm" href={`/companies/${id}/documents/securities-register`} target="_blank">Securities register</a></div>
+        <div class="row spread" style="padding:16px 20px 0"><h2>Capitalization table</h2><span class="row"><a class="btn sm" href={`/companies/${id}/cap-table.csv`}>Export cap table</a><a class="btn sm" href={`/companies/${id}/documents/securities-register`} target="_blank">Securities register</a></span></div>
         {b.shareholders.length ? (
           <table>
             <thead><tr><th>Shareholder</th>{b.classes.map((cl) => <th class="num">{cl.name}</th>)}<th class="num">Total</th><th class="num">Equity %</th><th class="num">Voting %</th></tr></thead>
@@ -791,13 +812,24 @@ const Documents = ({ b }: { b: CompanyBundle }) => {
         <p class="muted small">Documents open in a print-ready view. Use your browser's "Save as PDF" to file them.</p>
         <ul class="list-plain">{docs.map(([k, l, d]) => <li class="row spread"><span><strong>{l}</strong><div class="small muted">{d}</div></span><a class="btn sm" target="_blank" href={`/companies/${id}/documents/${k}`}>Open</a></li>)}</ul>
       </div>
-      <div class="card">
-        <h2>Share certificates</h2>
-        {b.txs.filter((t) => t.to_shareholder_id && t.certificate_number).length ? (
-          <ul class="list-plain">{b.txs.filter((t) => t.to_shareholder_id && t.certificate_number).map((t) => (
-            <li class="row spread"><span>Certificate {t.certificate_number}<div class="small muted">{t.quantity.toLocaleString()} {b.classes.find((cl) => cl.id === t.share_class_id)?.name} · {b.shareholders.find((x) => x.id === t.to_shareholder_id)?.name}</div></span><a class="btn sm" target="_blank" href={`/companies/${id}/documents/certificate/${t.id}`}>Open</a></li>
-          ))}</ul>
-        ) : <Empty>Certificates appear here for ledger entries with a certificate number.</Empty>}
+      <div>
+        <div class="card">
+          <h2>{b.company.uncertificated ? 'Notices of uncertificated shares' : 'Share certificates'}</h2>
+          {b.company.uncertificated ? <p class="small muted">This company's shares are uncertificated. A written notice with the information a certificate would contain is sent to the holder after each issue or transfer.</p> : null}
+          {b.txs.filter((t) => t.to_shareholder_id && t.certificate_number).length ? (
+            <ul class="list-plain">{b.txs.filter((t) => t.to_shareholder_id && t.certificate_number).map((t) => (
+              <li class="row spread"><span>{b.company.uncertificated ? 'Notice' : 'Certificate'} {t.certificate_number}<div class="small muted">{t.quantity.toLocaleString()} {b.classes.find((cl) => cl.id === t.share_class_id)?.name} · {b.shareholders.find((x) => x.id === t.to_shareholder_id)?.name}</div></span><a class="btn sm" target="_blank" href={`/companies/${id}/documents/${b.company.uncertificated ? 'notice' : 'certificate'}/${t.id}`}>Open</a></li>
+            ))}</ul>
+          ) : <Empty>{b.company.uncertificated ? 'Notices' : 'Certificates'} appear here for ledger entries with a number.</Empty>}
+        </div>
+        <div class="card">
+          <div class="row spread"><h2>Minute book documents</h2><a class="small" href={`/companies/${id}?tab=files`}>All documents</a></div>
+          {b.docs.filter((d) => d.in_minute_book).length ? (
+            <ul class="list-plain">{b.docs.filter((d) => d.in_minute_book).map((d) => (
+              <li class="row spread"><span>{d.title}<div class="small muted"><D d={d.doc_date ?? d.created_at.slice(0, 10)} /></div></span><a class="btn sm" target="_blank" href={`/companies/${id}/files/${d.id}`}>Open</a></li>
+            ))}</ul>
+          ) : <Empty>Mark uploaded or generated documents as "in minute book" to list them here.</Empty>}
+        </div>
       </div>
     </div>
   );
@@ -861,8 +893,17 @@ app.get('/:id/edit', async (c) => {
           <div class="fields">
             <Field label="Corporation #" name="corp_number" value={co.corp_number} />
             <Field label="Business # (BN)" name="business_number" value={co.business_number} />
-            <Field label="NUANS / NR #" name="nuans_number" value={co.nuans_number} />
-            <Field label="NUANS date" name="nuans_date" type="date" value={co.nuans_date} />
+            <Field label="GST/HST #" name="gst_number" value={co.gst_number} />
+            <Field label="Payroll program #" name="payroll_number" value={co.payroll_number} />
+            <Field label="Import-export #" name="import_export_number" value={co.import_export_number} />
+            <Field label="NUANS / Name Request #" name="nuans_number" value={co.nuans_number} />
+            <Field label="Name search date" name="nuans_date" type="date" value={co.nuans_date} />
+            <Field label="Name reservation expires" name="name_request_expires" type="date" value={co.name_request_expires} />
+            <div>
+              <label for="registry_password">Registry company password <span class="hint">({co.registry_password ? 'saved; leave blank to keep' : 'optional'})</span></label>
+              <input id="registry_password" name="registry_password" type="password" autocomplete="new-password" placeholder={co.registry_password ? '••••••••' : ''} />
+              {co.registry_password ? <label class="check small" style="margin-top:4px"><input type="checkbox" name="clear_registry_password" value="1" /> Remove saved password</label> : null}
+            </div>
             <div>
               <label>Fiscal year end</label>
               <div class="row"><select name="fye_month" style="width:60%">{MONTHS.map((m, i) => <option value={String(i + 1)} selected={i + 1 === Number(fm)}>{m}</option>)}</select><input name="fye_day" type="number" min="1" max="31" value={String(Number(fd))} style="width:35%" /></div>
@@ -872,10 +913,13 @@ app.get('/:id/edit', async (c) => {
           </div>
           <div class="fields">
             <Area label="Registered office" name="registered_office" value={co.registered_office} />
+            <Area label="Records office" name="records_office" value={co.records_office} hint="if different from registered office" />
             <Area label="Mailing address" name="mailing_address" value={co.mailing_address} />
           </div>
           <Field label="Business activity" name="business_activity" value={co.business_activity} />
+          <label class="check"><input type="checkbox" name="uncertificated" value="1" checked={!!co.uncertificated} /> Shares are uncertificated (issue notices instead of share certificates)</label>
           <Area label="Restrictions" name="restrictions" value={co.restrictions} />
+          <Area label="Extra information" name="extra_info" value={co.extra_info} hint="shown on the company profile" />
           <Area label="Internal notes" name="notes" value={co.notes} />
           <div class="row"><button class="btn primary">Save changes</button><a class="btn" href={`/companies/${co.id}`}>Cancel</a></div>
         </form>
@@ -898,7 +942,8 @@ app.post('/:id/edit', async (c) => {
   const f = await readForm(c);
   const j = getJurisdiction(s(f.jurisdiction));
   if (!j) return redirect(c, `/companies/${id}/edit`, 'error', 'Choose a jurisdiction.');
-  if (s(f.nuans_date) && !isIso(s(f.nuans_date))) return redirect(c, `/companies/${id}/edit`, 'error', 'NUANS date is not valid.');
+  if ((s(f.nuans_date) && !isIso(s(f.nuans_date))) || (s(f.name_request_expires) && !isIso(s(f.name_request_expires)))) return redirect(c, `/companies/${id}/edit`, 'error', 'A name search date is not valid.');
+  const registryPassword = s(f.clear_registry_password) ? null : s(f.registry_password) || co.registry_password || null;
   const next = {
     ...co,
     client_id: s(f.client_id) || null,
@@ -915,6 +960,8 @@ app.post('/:id/edit', async (c) => {
     stmt(db, `UPDATE companies SET client_id=?, jurisdiction=?, name_type=?, distinctive=?, descriptive=?, legal_ending=?, legal_name=?, corp_number=?, business_number=?, nuans_number=?, nuans_date=?, fiscal_year_end=?, min_directors=?, max_directors=?, registered_office=?, mailing_address=?, business_activity=?, restrictions=?, notes=?, updated_at=datetime('now') WHERE id=?`,
       next.client_id, next.jurisdiction, next.name_type, next.distinctive, next.descriptive, next.legal_ending, legalName, next.corp_number, s(f.business_number), s(f.nuans_number), s(f.nuans_date), next.fiscal_year_end,
       int(f.min_directors) ?? 1, int(f.max_directors) ?? 10, s(f.registered_office), s(f.mailing_address), s(f.business_activity), s(f.restrictions), s(f.notes), id),
+    stmt(db, 'UPDATE companies SET gst_number=?, payroll_number=?, import_export_number=?, records_office=?, registry_password=?, name_request_expires=?, extra_info=?, uncertificated=? WHERE id=?',
+      s(f.gst_number), s(f.payroll_number), s(f.import_export_number), s(f.records_office), registryPassword, s(f.name_request_expires), s(f.extra_info), s(f.uncertificated) === '1', id),
     ...complianceStatements(db, next, today()),
     logStmt(db, c.get('user').id, `Updated details for ${legalName ?? displayName(next)}`, { companyId: id, clientId: next.client_id }),
   ];

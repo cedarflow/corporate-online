@@ -13,6 +13,9 @@
       "database_id": "830d9306-71fd-45fc-b31a-be3b747df930",
       "migrations_dir": "migrations"
     }
+  ],
+  "r2_buckets": [
+    { "binding": "FILES", "bucket_name": "corporate-online-files" }
   ]
   // Secrets (set with `npx wrangler secret put SESSION_SECRET`):
   //   SESSION_SECRET  - long random string used to sign login cookies

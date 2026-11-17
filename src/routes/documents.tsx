@@ -87,9 +87,12 @@ const IscRegister = ({ b }: { b: CompanyBundle }) => {
       <p>Prepared from the securities register as at {human(today())}. Registered holdings of 25% or more of votes or fair market value (approximated here by share count) are listed. Indirect holdings, control through agreements and corporate shareholders' beneficial owners must be reviewed and added manually.</p>
       <table>
         <thead><tr><th>Name</th><th>Type</th><th>Address</th><th>% votes</th><th>% shares</th><th>Nature of control</th></tr></thead>
-        <tbody>{sig.map((r) => <tr><td>{r.shareholder.name}</td><td>{r.shareholder.kind}</td><td>{r.shareholder.address ?? ''}</td><td>{r.pctVoting.toFixed(2)}%</td><td>{r.pctEquity.toFixed(2)}%</td><td>Registered holder{r.shareholder.kind !== 'individual' ? ' (identify individuals behind this holder)' : ''}</td></tr>)}</tbody>
+        <tbody>
+          {sig.map((r) => <tr><td>{r.shareholder.name}</td><td>{r.shareholder.kind}</td><td>{r.shareholder.address ?? ''}</td><td>{r.pctVoting.toFixed(2)}%</td><td>{r.pctEquity.toFixed(2)}%</td><td>Registered holder{r.shareholder.kind !== 'individual' ? ' (identify individuals behind this holder)' : ''}</td></tr>)}
+          {b.isc.map((x) => <tr><td>{x.name}{x.ceased_on ? ` (ceased ${human(x.ceased_on)})` : ''}</td><td>individual</td><td>{x.address ?? ''}</td><td>—</td><td>—</td><td>{x.control_description ?? ''}{x.became_on ? ` Since ${human(x.became_on)}.` : ''}{x.tax_residence ? ` Tax residence: ${x.tax_residence}.` : ''}</td></tr>)}
+        </tbody>
       </table>
-      {!sig.length ? <p><em>No registered holder meets the 25% threshold.</em></p> : null}
+      {!sig.length && !b.isc.length ? <p><em>No individual meets the 25% threshold or has been recorded as having significant control.</em></p> : null}
     </>
   );
 };
@@ -131,6 +134,7 @@ const DOCS: Record<string, { title: string; render: (b: CompanyBundle) => any }>
             <ol>
               <li>Register of Directors</li><li>Register of Officers</li><li>Securities Register</li><li>Register of Shareholders</li><li>Register of Individuals with Significant Control</li>
               <li>Resolutions ({signed.length})<ol>{signed.map((r) => <li>{human(r.resolution_date)}: {r.title}</li>)}</ol></li>
+              {b.docs.some((d) => d.in_minute_book) ? <li>Other minute book documents ({b.docs.filter((d) => d.in_minute_book).length})<ol>{b.docs.filter((d) => d.in_minute_book).map((d) => <li>{d.doc_date ? `${human(d.doc_date)}: ` : ''}{d.title}{d.file_key ? ' (filed separately)' : ''}</li>)}</ol></li> : null}
             </ol>
           </div>
           <div class="page-break"><DirectorsRegister b={b} /></div>
@@ -139,11 +143,52 @@ const DOCS: Record<string, { title: string; render: (b: CompanyBundle) => any }>
           <div class="page-break"><ShareholdersRegister b={b} /></div>
           <div class="page-break"><IscRegister b={b} /></div>
           {signed.map((r) => <div class="page-break"><h1>{r.title}</h1><ResolutionDoc b={b} r={r} /></div>)}
+          {b.docs.filter((d) => d.in_minute_book && d.body).map((d) => <div class="page-break"><div class="body">{d.body}</div></div>)}
         </>
       );
     },
   },
 };
+
+const spell = (n: number): string => {
+  const ones = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+  if (n < 20) return ones[n];
+  if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 ? `-${ones[n % 10]}` : '');
+  if (n < 1000) return `${ones[Math.floor(n / 100)]} Hundred${n % 100 ? ` ${spell(n % 100)}` : ''}`;
+  for (const [v, w] of [[1e9, 'Billion'], [1e6, 'Million'], [1e3, 'Thousand']] as [number, string][]) {
+    if (n >= v) return `${spell(Math.floor(n / v))} ${w}${n % v ? ` ${spell(n % v)}` : ''}`;
+  }
+  return String(n);
+};
+
+// Written notice for uncertificated shares (e.g. BC Business Corporations Act s. 107(6)).
+app.get('/:id/documents/notice/:tid', async (c) => {
+  const b = await loadCompany(c.env.DB, c.req.param('id'));
+  const t = b?.txs.find((x) => x.id === c.req.param('tid'));
+  if (!b || !t || !t.to_shareholder_id) return c.notFound();
+  const holder = b.shareholders.find((x) => x.id === t.to_shareholder_id);
+  const cls = b.classes.find((x) => x.id === t.share_class_id);
+  const pres = b.currentOfficers.find((o) => o.title === 'President');
+  const act = b.j.code === 'BC' ? 'Business Corporations Act, SBC 2002, c 57' : b.j.statute.replace(/\s*\([A-Z]+\)$/, '');
+  const heading = b.j.code === 'BC' ? `NOTICE UNDER SECTION 107(6) OF THE ${act.toUpperCase()} (the "Act")` : 'NOTICE OF ISSUANCE OF UNCERTIFICATED SHARES';
+  return DocPage(c, {
+    title: `Notice ${t.certificate_number ?? ''}`,
+    back: `/companies/${b.company.id}?tab=documents`,
+    children: (
+      <>
+        <h1 style="font-size:13pt">{heading}</h1>
+        <p style="text-align:center"><strong>Number {t.certificate_number ?? '—'}</strong><br />{t.quantity.toLocaleString()} {cls?.name} Shares<br />{b.name.toUpperCase()}</p>
+        <p>Incorporated under the {act}.</p>
+        <p>This notice is sent in compliance with the Act. It confirms that <strong>{holder?.name.toUpperCase()}</strong> is the registered holder of {spell(t.quantity)} ({t.quantity.toLocaleString()}) {cls?.name} shares without par value of {b.name.toUpperCase()} (the "Corporation"), issued as fully paid and non-assessable on {human(t.tx_date)}, transferable only on the books of the Corporation by the holder in person, or as otherwise prescribed by the Act. No certificate was issued to evidence these shares.</p>
+        <p>There are restrictions on the right to transfer the shares described in this notice.</p>
+        <p style="margin-top:24px">DATED {human(t.tx_date).toUpperCase()}.</p>
+        <p style="margin-top:28px">{b.name.toUpperCase()}</p>
+        <div class="sigs"><div class="sig">PER: {pres ? `${pres.name.toUpperCase()}, PRESIDENT` : 'AUTHORIZED SIGNATORY'}</div></div>
+      </>
+    ),
+  });
+});
 
 app.get('/:id/documents/certificate/:tid', async (c) => {
   const b = await loadCompany(c.env.DB, c.req.param('id'));
