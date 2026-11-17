@@ -20,6 +20,7 @@ import clients from './routes/clients.tsx';
 import businessNames from './routes/businessNames.tsx';
 import compliance from './routes/compliance.tsx';
 import tasks from './routes/tasks.tsx';
+import links from './routes/links.tsx';
 import team from './routes/team.tsx';
 
 const SESSION_DAYS = 14;
@@ -158,6 +159,7 @@ app.route('/clients', clients);
 app.route('/business-names', businessNames);
 app.route('/compliance', compliance);
 app.route('/tasks', tasks);
+app.route('/links', links);
 app.route('/team', team);
 
 app.notFound((c) => c.html(<Shell title="Not found"><div class="auth"><div class="card"><h1>Not found</h1><p class="muted">That page doesn't exist.</p><a class="btn" href="/">Back to dashboard</a></div></div></Shell>, 404));

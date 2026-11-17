@@ -13,7 +13,7 @@ app.get('/', async (c) => {
   const db = c.env.DB;
   const t = today();
   const user = c.get('user');
-  const [counts, pipeline, due, myTasks, recent] = await Promise.all([
+  const [counts, pipeline, due, myTasks, recent, links] = await Promise.all([
     all<{ k: string; n: number }>(db, `
       SELECT 'companies' AS k, COUNT(*) AS n FROM companies WHERE status != 'dissolved'
       UNION ALL SELECT 'clients', COUNT(*) FROM clients
@@ -36,6 +36,7 @@ app.get('/', async (c) => {
     all<{ message: string; created_at: string; user_name: string | null; company_id: string | null }>(db, `
       SELECT a.message, a.created_at, u.name AS user_name, a.company_id FROM activity a
       LEFT JOIN users u ON u.id = a.user_id ORDER BY a.created_at DESC LIMIT 10`),
+    all<{ id: string; title: string; url: string; notes: string | null }>(db, 'SELECT id, title, url, notes FROM links ORDER BY title COLLATE NOCASE'),
   ]);
   const n = Object.fromEntries(counts.map((r) => [r.k, r.n]));
   const coName = (r: { co_name: string | null; co_type: string | null; co_j: string | null }) =>
@@ -124,6 +125,34 @@ app.get('/', async (c) => {
                 ))}
               </ul>
             ) : <Empty>No activity yet.</Empty>}
+          </div>
+          <div class="card flush">
+            <h2>Useful links</h2>
+            {links.length ? (
+              <ul class="list-plain" style="padding:0 20px">
+                {links.map((l) => (
+                  <li class="row spread">
+                    <span>
+                      <a href={l.url} target="_blank" rel="noopener noreferrer"><strong>{l.title}</strong> ↗</a>
+                      <div class="small muted">{l.notes ? `${l.notes} · ` : ''}{new URL(l.url).hostname}</div>
+                    </span>
+                    <form method="post" action={`/links/${l.id}/delete`} data-confirm={`Remove "${l.title}"?`}><button class="btn sm link">Remove</button></form>
+                  </li>
+                ))}
+              </ul>
+            ) : <Empty>No links saved yet.</Empty>}
+            <div style="padding:14px 20px;border-top:1px solid var(--line)">
+              <details class="inline"><summary>+ Add link</summary>
+                <form method="post" action="/links" class="stack">
+                  <div class="fields">
+                    <div><label for="link-url">Web address</label><input id="link-url" name="url" type="url" required placeholder="https://" /></div>
+                    <div><label for="link-title">Title</label><input id="link-title" name="title" placeholder="defaults to the site name" /></div>
+                  </div>
+                  <div><label for="link-notes">Note</label><input id="link-notes" name="notes" /></div>
+                  <button class="btn primary sm">Save link</button>
+                </form>
+              </details>
+            </div>
           </div>
         </div>
       </>
