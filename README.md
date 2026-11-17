@@ -82,7 +82,7 @@ npm run typecheck
    ```
 5. Create the first admin at `https://<your-worker>/setup?token=<SETUP_TOKEN>`. Without the token, setup returns 403.
 
-**Current deployment:** the `ALT Tech Support` account, at https://corporate-online.alt-tech-support.workers.dev, with D1 database `corporate-online`. To redeploy after changes, run `npm run deploy`; if the schema changed, run `npm run db:migrate:remote` first.
+**Current deployment:** the `ALT Tech Support` account, at https://corporate.cedarflow.co (a custom domain set in `wrangler.jsonc`; the workers.dev URL is disabled), with D1 database `corporate-online`. To redeploy after changes, run `npm run deploy`; if the schema changed, run `npm run db:migrate:remote` first.
 
 **Recommended:** because this is an internal tool, put it behind **Cloudflare Access** (Zero Trust → Access → Applications). Only your staff can then reach it, and the built-in login is a second layer. Add a custom domain under the Worker's *Settings → Domains & Routes*.
 
