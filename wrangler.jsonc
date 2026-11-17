@@ -3,13 +3,13 @@
   "name": "corporate-online",
   "main": "src/index.tsx",
   "compatibility_date": "2025-09-01",
+  "account_id": "83b987d887d3eba4d2502e0ff13c5e02",
   "observability": { "enabled": true },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "corporate-online",
-      // Replace with the id printed by: npx wrangler d1 create corporate-online
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "830d9306-71fd-45fc-b31a-be3b747df930",
       "migrations_dir": "migrations"
     }
   ]

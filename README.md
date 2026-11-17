@@ -69,15 +69,20 @@ npm run typecheck
    ```bash
    npm run db:migrate:remote
    ```
-3. Set the session secret:
+3. Set the secrets. `SETUP_TOKEN` locks first-run setup so only someone with the link can create the first admin:
    ```bash
    openssl rand -base64 48 | npx wrangler secret put SESSION_SECRET
+   ```
+   ```bash
+   openssl rand -hex 24 | tee /dev/stderr | npx wrangler secret put SETUP_TOKEN
    ```
 4. Deploy:
    ```bash
    npm run deploy
    ```
-5. Visit the Worker URL and complete `/setup` **straight away**. Until the first admin exists, anyone who reaches the URL can claim it.
+5. Create the first admin at `https://<your-worker>/setup?token=<SETUP_TOKEN>`. Without the token, setup returns 403.
+
+**Current deployment:** the `ALT Tech Support` account, at https://corporate-online.alt-tech-support.workers.dev, with D1 database `corporate-online`. To redeploy after changes, run `npm run deploy`; if the schema changed, run `npm run db:migrate:remote` first.
 
 **Recommended:** because this is an internal tool, put it behind **Cloudflare Access** (Zero Trust → Access → Applications). Only your staff can then reach it, and the built-in login is a second layer. Add a custom domain under the Worker's *Settings → Domains & Routes*.
 
