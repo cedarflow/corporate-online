@@ -36,7 +36,7 @@ export function Page(c: Ctx, props: { title: string; children: Child; crumbs?: [
           </nav>
           <div class="me">
             <div><strong>{user.name}</strong></div>
-            <div class="muted small" style="color:#9fb8ad">{user.email}</div>
+            <div class="small" style="color:var(--side-muted)">{user.email}</div>
             <form method="post" action="/logout" style="margin-top:6px"><button>Sign out</button></form>
           </div>
         </aside>
