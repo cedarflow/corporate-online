@@ -1,0 +1,167 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Theme Options</title><style>
+body{margin:0;padding:28px;background:#eceef2;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:#1c1d2b}
+h1{margin:0 0 4px;font-size:22px} .intro{color:#5f6275;margin:0 0 20px}
+.wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(600px,1fr));gap:22px}
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden}
+.card header{padding:14px 18px;display:grid;grid-template-columns:1fr auto;align-items:center}
+.card h2{margin:0;font-size:16px} .card header p{margin:2px 0 0;color:#6b6f80;font-size:13px;grid-column:1}
+.sw{grid-row:1/3;grid-column:2;display:flex;gap:4px} .sw span{width:22px;height:22px;border-radius:6px;border:1px solid rgba(0,0,0,.1)}
+.mock{display:grid;grid-template-columns:150px 1fr;height:330px;font-size:12.5px;border-top:1px solid #eee}
+aside{background:var(--side);color:var(--sideInk);padding:12px 8px;border-right:1px solid var(--sb)}
+.brand{display:flex;align-items:center;gap:7px;font-weight:700;margin:0 4px 12px} .brand i{font-style:normal;width:22px;height:22px;border-radius:6px;background:var(--logo);color:var(--logoInk);display:grid;place-items:center;font-weight:800}
+aside a{display:flex;padding:6px 8px;border-radius:6px;color:var(--link);margin:1px 0} aside a.on{background:var(--on);color:var(--onInk);font-weight:600;box-shadow:inset 3px 0 0 var(--logo)}
+aside b{margin-left:auto;background:#b42318;color:#fff;border-radius:9px;font-size:10px;padding:1px 6px}
+main{background:var(--bg);padding:12px 16px;overflow:hidden}
+.crumb{color:#6b6f80;font-size:11px;text-decoration:underline} .row{display:flex;align-items:center;gap:6px;margin:2px 0 8px} h3{margin:0;font-size:15px;flex:1}
+.btn{border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 9px;font-weight:600;font-size:11.5px;white-space:nowrap} .btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:10px} .t{padding:5px 9px;color:#6b6f80;font-weight:600;border-bottom:2px solid transparent;margin-bottom:-1px} .t.on{color:var(--brand);border-color:var(--brand)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px} .stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px} .n{font-size:18px;font-weight:700} .n.bad{color:#b42318} .l{color:#6b6f80;font-size:11px}
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:8px} td{padding:6px 9px;border-bottom:1px solid var(--line)} td:last-child{text-align:right;width:1%;white-space:nowrap} td a{color:var(--brand);text-decoration:underline;font-size:11px} .m{color:#6b6f80;font-size:11px}
+.bd{border-radius:99px;padding:2px 8px;font-size:10.5px;font-weight:600} .warn{background:#fef3c7;color:#92400e} .bd.bad{background:#fde8e6;color:#b42318} .bd.brand{background:var(--soft);color:var(--brand)}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:10px} .bar i{display:block;width:62%;height:100%;background:var(--brand);border-radius:3px}
+@media(max-width:700px){body{padding:16px}.wrap{grid-template-columns:1fr}.mock{grid-template-columns:110px 1fr}}
+</style></head><body><h1>Corporate Online: colour options</h1><p class="intro">Each preview uses the app's real layout. Status colours (green / amber / red) stay the same in every option.</p><div class="wrap">
+<section class="card">
+  <header><h2>1. Indigo & Navy</h2><p>Current theme</p>
+    <div class="sw"><span title="#161936" style="background:#161936"></span><span title="#4338ca" style="background:#4338ca"></span><span title="#fbbf24" style="background:#fbbf24"></span><span title="#e9e8fc" style="background:#e9e8fc"></span><span title="#f5f6fa" style="background:#f5f6fa"></span></div></header>
+  <div class="mock" style="--side:#161936;--link:#b9bce0;--on:rgba(129,140,248,.22);--logo:#fbbf24;--logoInk:#161936;--brand:#4338ca;--soft:#e9e8fc;--bg:#f5f6fa;--line:#e3e5ee;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>2. Cedar Green</h2><p>The original theme</p>
+    <div class="sw"><span title="#14382e" style="background:#14382e"></span><span title="#1f5c4a" style="background:#1f5c4a"></span><span title="#e9b384" style="background:#e9b384"></span><span title="#e3efe9" style="background:#e3efe9"></span><span title="#f6f7f5" style="background:#f6f7f5"></span></div></header>
+  <div class="mock" style="--side:#14382e;--link:#cfe0d8;--on:rgba(255,255,255,.13);--logo:#e9b384;--logoInk:#14382e;--brand:#1f5c4a;--soft:#e3efe9;--bg:#f6f7f5;--line:#e2e6e3;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>3. Charcoal & Teal</h2><p>Neutral and modern</p>
+    <div class="sw"><span title="#1f2328" style="background:#1f2328"></span><span title="#0f766e" style="background:#0f766e"></span><span title="#2dd4bf" style="background:#2dd4bf"></span><span title="#e0f2ef" style="background:#e0f2ef"></span><span title="#f6f7f8" style="background:#f6f7f8"></span></div></header>
+  <div class="mock" style="--side:#1f2328;--link:#c5cad1;--on:rgba(45,212,191,.16);--logo:#2dd4bf;--logoInk:#1f2328;--brand:#0f766e;--soft:#e0f2ef;--bg:#f6f7f8;--line:#e4e7ea;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>4. Slate & Sky Blue</h2><p>Classic corporate / banking</p>
+    <div class="sw"><span title="#0f2742" style="background:#0f2742"></span><span title="#1d6fb8" style="background:#1d6fb8"></span><span title="#38bdf8" style="background:#38bdf8"></span><span title="#e3effa" style="background:#e3effa"></span><span title="#f4f7fa" style="background:#f4f7fa"></span></div></header>
+  <div class="mock" style="--side:#0f2742;--link:#bfd0e4;--on:rgba(56,189,248,.18);--logo:#38bdf8;--logoInk:#0f2742;--brand:#1d6fb8;--soft:#e3effa;--bg:#f4f7fa;--line:#e1e7ee;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>5. Midnight & Coral</h2><p>Warm and friendly, Ownr-like energy</p>
+    <div class="sw"><span title="#1e1b2e" style="background:#1e1b2e"></span><span title="#e0475e" style="background:#e0475e"></span><span title="#fb7185" style="background:#fb7185"></span><span title="#fde7ea" style="background:#fde7ea"></span><span title="#faf7f7" style="background:#faf7f7"></span></div></header>
+  <div class="mock" style="--side:#1e1b2e;--link:#cbc6dc;--on:rgba(251,113,133,.18);--logo:#fb7185;--logoInk:#1e1b2e;--brand:#e0475e;--soft:#fde7ea;--bg:#faf7f7;--line:#ece6e7;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>6. Plum & Gold</h2><p>Premium / law-firm feel</p>
+    <div class="sw"><span title="#2e1638" style="background:#2e1638"></span><span title="#6b2c80" style="background:#6b2c80"></span><span title="#eab308" style="background:#eab308"></span><span title="#f1e6f5" style="background:#f1e6f5"></span><span title="#f8f6f9" style="background:#f8f6f9"></span></div></header>
+  <div class="mock" style="--side:#2e1638;--link:#dccbe2;--on:rgba(234,179,8,.18);--logo:#eab308;--logoInk:#2e1638;--brand:#6b2c80;--soft:#f1e6f5;--bg:#f8f6f9;--line:#e9e3ec;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>7. Forest & Copper</h2><p>Earthy, keeps the cedar idea but richer</p>
+    <div class="sw"><span title="#0e2a24" style="background:#0e2a24"></span><span title="#b45309" style="background:#b45309"></span><span title="#d97706" style="background:#d97706"></span><span title="#fbeedd" style="background:#fbeedd"></span><span title="#f7f6f2" style="background:#f7f6f2"></span></div></header>
+  <div class="mock" style="--side:#0e2a24;--link:#c3d6cf;--on:rgba(217,119,6,.20);--logo:#d97706;--logoInk:#0e2a24;--brand:#b45309;--soft:#fbeedd;--bg:#f7f6f2;--line:#e7e3da;--sideInk:#fff;--onInk:#fff;--sb:transparent">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section>
+<section class="card">
+  <header><h2>8. Light Sidebar & Blue</h2><p>All-light layout, minimal</p>
+    <div class="sw"><span title="#ffffff" style="background:#ffffff"></span><span title="#2563eb" style="background:#2563eb"></span><span title="#2563eb" style="background:#2563eb"></span><span title="#eaf1fe" style="background:#eaf1fe"></span><span title="#f8fafc" style="background:#f8fafc"></span></div></header>
+  <div class="mock" style="--side:#ffffff;--link:#475467;--on:#eef4ff;--logo:#2563eb;--logoInk:#ffffff;--brand:#2563eb;--soft:#eaf1fe;--bg:#f8fafc;--line:#e5e7eb;--sideInk:#101828;--onInk:#1d4ed8;--sideBorder:#e5e7eb;--sideInk:#101828;--onInk:#1d4ed8;--sb:#e5e7eb">
+    <aside><div class="brand"><i>C</i>Corporate Online</div>
+      <a>Dashboard</a><a class="on">Companies</a><a>Clients</a><a>Compliance <b>2</b></a><a>Tasks</a></aside>
+    <main>
+      <div class="crumb">Companies / Aisha Okafor</div>
+      <div class="row"><h3>Bright Harbour Design Inc.</h3><span class="btn">Edit</span><span class="btn primary">Start incorporation</span></div>
+      <div class="tabs"><span class="t on">Overview</span><span class="t">Shares</span><span class="t">Compliance</span></div>
+      <div class="grid"><div class="stat"><div class="n">12</div><div class="l">Companies</div></div><div class="stat"><div class="n bad">2</div><div class="l">Overdue</div></div></div>
+      <table><tr><td>Federal annual return<div><a>Maple Ridge Bakery Ltd.</a></div></td><td><span class="bd warn">Due soon</span></td></tr>
+        <tr><td>BC annual report<div><a>1428870 B.C. Ltd.</a></div></td><td><span class="bd bad">Overdue</span></td></tr>
+        <tr><td>Class A Common<div class="m">100 shares</div></td><td><span class="bd brand">Voting</span></td></tr></table>
+      <div class="bar"><i></i></div>
+    </main>
+  </div>
+</section></div></body></html>
