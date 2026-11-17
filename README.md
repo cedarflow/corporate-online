@@ -11,10 +11,21 @@ An internal, Ownr-style platform for staff to incorporate and maintain Canadian 
   - Registers of directors and officers.
   - Share classes, shareholders and a share ledger covering issuances, transfers and redemptions. Holdings are validated as of each transaction date.
   - A cap table with equity % and voting %.
-  - A register of individuals with significant control (ISC).
-  - Share certificates.
+  - A register of individuals with significant control (ISC), including people with control who aren't registered shareholders.
+  - Share certificates, or notices for companies with uncertificated shares (BC s. 107(6)).
   - The complete minute book as one printable document.
-- **Resolution templates**: organizational resolutions (directors and shareholders), annual resolutions, share issuance, share transfer, director change, and custom. Templates pre-fill from company records, can be edited, and are marked signed once executed. All of them print to PDF.
+  - Cap table export to CSV.
+- **Documents**: files are uploaded to and downloaded from Cloudflare R2, with search, categories and a minute-book flag. Generated agreements cover:
+  - Founder and general IP assignment.
+  - Mutual NDA.
+  - Employment and contractor agreements.
+  - Shareholder loan.
+  - Consent to act as director.
+  - Subscription for shares.
+- **Financing**: convertible notes and SAFEs, employee stock option plans with grants, vesting and cliffs, and fully diluted totals.
+- **Employees & contractors** per company.
+- **Company identifiers**: BN, GST/HST, payroll and import-export numbers, records office, name request expiry, and an optional masked registry password.
+- **Resolution templates**: organizational resolutions (directors and shareholders), annual resolutions, share issuance, share transfer, a dividend split pro rata across holders, director change, and custom. Templates pre-fill from company records, can be edited, and are marked signed once executed. All of them print to PDF.
 - **Compliance calendar**:
   - Annual returns (jurisdiction rule based on the incorporation anniversary).
   - CRA tax balance and T2 due dates, plus annual resolutions, based on the fiscal year end.
