@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "corporate-online",
+  "main": "src/index.tsx",
+  "compatibility_date": "2025-09-01",
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "corporate-online",
+      // Replace with the id printed by: npx wrangler d1 create corporate-online
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+  // Secrets (set with `npx wrangler secret put SESSION_SECRET`):
+  //   SESSION_SECRET  - long random string used to sign login cookies
+}
